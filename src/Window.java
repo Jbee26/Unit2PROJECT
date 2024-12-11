@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,6 +33,8 @@ public class Window implements ActionListener {
     private JScrollPane sp;
     private JPanel CtrlP;
     private JPanel CtrlP2;
+    private JPanel CtrlP3;
+
 
     private int WIDTH = 800;
     private int HEIGHT = 700;
@@ -39,7 +42,12 @@ public class Window implements ActionListener {
     private JButton B2;
     private JButton B3;
     private JButton B4;
+    private JButton B5;
+    private JButton B6;
+    private JButton B7;
+
     private ImageIcon IC;
+
 
 
     public Window() {
@@ -53,13 +61,17 @@ public class Window implements ActionListener {
     }
 
     private void prepareGUI() {
-        mainFrame = new JFrame("Pokedex");
+        mainFrame = new JFrame("NHL STATS");
         CtrlP = new JPanel();
         CtrlP2 = new JPanel();
+        CtrlP3 = new JPanel();
+
         mainFrame.setSize(WIDTH, HEIGHT);
-        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.setLayout(new GridLayout(4, 2));
         CtrlP.setLayout(new GridLayout(2, 1));
         CtrlP2.setLayout(new GridLayout(2, 1));
+        CtrlP2.setLayout(new GridLayout(1, 3));
+
 
 
 
@@ -67,9 +79,12 @@ public class Window implements ActionListener {
         B2 = new JButton("CLEAR");
         B3 = new JButton("SKATER");
         B4 = new JButton("GOALIE");
+        B5 = new JButton("PRESEASON");
+        B6 = new JButton("REGULAR SEASON");
+        B7 = new JButton("PLAYOFFS");
 
 
-        ta = new JTextArea("ENTER POKEMON HERE");
+        ta = new JTextArea("TYPE WHAT YEAR YOU WANT TO VIEW (EX: 20202021)");
         ta.setBounds(50, 5, WIDTH - 100, HEIGHT - 50);
         ta.setBorder(new LineBorder(Color.BLACK));
 
@@ -78,7 +93,7 @@ public class Window implements ActionListener {
         sp = new JScrollPane(ta3);
         B1.setForeground(Color.green);
         B2.setForeground(Color.red);
-        Font f = new Font("Chalkboard", Font.ITALIC, 15);
+        Font f = new Font("Chalkboard", Font.ITALIC, 13);
         Font f2 = new Font("Chalkboard", Font.ITALIC, 12);
         ta.setFont(f);
         ta3.setEditable(false);
@@ -96,6 +111,9 @@ public class Window implements ActionListener {
 
         mainFrame.add(CtrlP);
         mainFrame.add(CtrlP2);
+        mainFrame.add(CtrlP3);
+
+
 
 
         mainFrame.add(ta);
@@ -110,6 +128,9 @@ public class Window implements ActionListener {
         CtrlP.add(B2);
         CtrlP2.add(B3);
         CtrlP2.add(B4);
+        CtrlP3.add(B5);
+        CtrlP3.add(B6);
+        CtrlP3.add(B7);
 
 
         //menu at top
@@ -153,10 +174,22 @@ public class Window implements ActionListener {
 
         B1.setActionCommand("ENTER");
         B2.setActionCommand("CLEAR");
+        B3.setActionCommand("SKATER");
+        B4.setActionCommand("GOALIE");
+        B5.setActionCommand("PRESEASON");
+        B6.setActionCommand("REGULAR SEASON");
+        B7.setActionCommand("PLAYOFFS");
+
 
 
         B1.addActionListener(new ButtonClickListener());
         B2.addActionListener(new ButtonClickListener());
+        B3.addActionListener(new ButtonClickListener());
+        B4.addActionListener(new ButtonClickListener());
+        B5.addActionListener(new ButtonClickListener());
+        B6.addActionListener(new ButtonClickListener());
+        B7.addActionListener(new ButtonClickListener());
+
 
 
         mainFrame.setVisible(true);
@@ -186,9 +219,30 @@ public class Window implements ActionListener {
 
             } else if (command.equals("CLEAR")) {
 
-                ta.setText("ENTER POKEMON HERE");
+                ta.setText("TYPE WHAT YEAR YOU WANT TO VIEW (EX: 20202021)");
 //                ta2.setText("");
                 ta3.setText("");
+
+
+            }
+
+            else if (command.equals("SKATER")){
+//                boolean pos2;
+//                if (pos2 = true) {
+//                    String pos = "skater";
+//                }
+
+            }
+
+            else if (command.equals("GOALIE")){
+
+//                boolean pos2;
+//                if (pos2 = false) {
+//                    String pos = "goalie";
+//                }
+
+
+
 
 
             }
@@ -240,10 +294,14 @@ public class Window implements ActionListener {
 
         try {
 
-        
 
-            URL url = new URL( "https://api-web.nhle.com/v1/skater-stats-leaders/20222023/2?categories=assists&limit=3");
-            URL url2 = new URL( "https://api-web.nhle.com/v1/goalie-stats-leaders/20232024/2?categories=wins&limit=3");
+            String dateRange = ta.getText();
+            String stat = ta.getText();
+            String pos = "skater";
+
+
+            URL url = new URL( "https://api-web.nhle.com/v1/" + pos + "-stats-leaders/" + dateRange + "/2?categories=&limit=3");
+
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -276,7 +334,7 @@ public class Window implements ActionListener {
 
         JSONParser parser = new JSONParser();
         //System.out.println(str);
-        org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) parser.parse(totlaJson);
+        JSONObject jsonObject = (JSONObject) parser.parse(totlaJson);
         System.out.println(jsonObject);
 
 
@@ -291,47 +349,38 @@ public class Window implements ActionListener {
             //JSONArray starships = (JSONArray)jsonObject.get("starships");
 
 
-            org.json.simple.JSONArray msg = (org.json.simple.JSONArray) jsonObject.get("points");
-            org.json.simple.JSONArray msg2 = (org.json.simple.JSONArray) jsonObject.get("goals");
-            org.json.simple.JSONArray msg3 = (org.json.simple.JSONArray) jsonObject.get("assists");
+            JSONArray msg = (JSONArray) jsonObject.get("assists");
+
+
 
             int n = msg.size(); //(msg).length();
-            int n2 = msg2.size();
-            int n3 = msg3.size();
 
 
-            for (int a = 0; a < n2; ++a) {
-                JSONObject test2 = (JSONObject) msg2.get(a);
-                System.out.println(test2);
-                String title = (String) test2.get("name");
-                System.out.println(title);
-                ta3.append("Who's that Pokemon? Its " + title + "\n");
 
-//
-            }
+
 
             for (int i = 0; i < n; ++i) {
                 JSONObject test = (JSONObject) msg.get(i);
                 System.out.println(test);
                 // System.out.println(person.getInt("key"));
-                JSONObject name1 = (JSONObject) test.get("ability");
+                JSONObject name1 = (JSONObject) test.get("firstName");
                 System.out.println(name1);
-                String abName = (String) name1.get("name");
+                String abName = (String) name1.get("default");
                 System.out.println(abName);
-                ta3.append("They can use " + abName +"\n");
+                JSONObject name2 = (JSONObject) test.get("lastName");
+                System.out.println(name2);
+                String ab2Name = (String) name2.get("default");
+                System.out.println(ab2Name);
+
+
+
+
+                ta3.append("Name: " + abName + " " + ab2Name + "\n");
             }
 
 
 
-            for (int l = 0; l < n3; ++l) {
-                JSONObject test3 = (JSONObject) msg3.get(l);
-                System.out.println(test3);
-                JSONObject version = (JSONObject) test3.get("version");
-                System.out.println(version);
-                String vName = (String) version.get("name");
-                System.out.println(vName);
-                ta3.append("Appeared in " + vName +"\n");
-            }
+
 
 
             // System.out.println(mass);
