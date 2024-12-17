@@ -25,7 +25,7 @@ public class Window implements ActionListener {
     private JFrame mainFrame2;
     private JPanel controlPanel;
     private JMenuBar mb;
-    private JMenu file, edit, help;
+    private JMenu file, edit, help, ai;
     private JMenuItem cut, copy, paste, selectAll;
     private JTextArea ta; //typing area
     private JFrame jf;
@@ -37,6 +37,8 @@ public class Window implements ActionListener {
     private JPanel CtrlP3;
     private String pos = "skater";
     private String stat = "points";
+    private String dateRange;
+    private String url = "https://api-web.nhle.com/v1/skater-stats-leaders/" + dateRange + "/2?categories=" + stat + "&limit=5";
 
 
 
@@ -153,6 +155,7 @@ public class Window implements ActionListener {
         file = new JMenu("File");
         edit = new JMenu("Edit");
         help = new JMenu("Help");
+        ai = new JMenu("AI");
         edit.add(cut);
         edit.add(copy);
         edit.add(paste);
@@ -160,6 +163,8 @@ public class Window implements ActionListener {
         mb.add(file);
         mb.add(edit);
         mb.add(help);
+        mb.add(ai);
+
         //end menu at top
 
 
@@ -182,9 +187,7 @@ public class Window implements ActionListener {
         B2.setActionCommand("CLEAR");
         B3.setActionCommand("SKATER");
         B4.setActionCommand("GOALIE");
-        B5.setActionCommand("POINTS");
-        B6.setActionCommand("ASSISTS");
-        B7.setActionCommand("GOALS");
+
 
 
 
@@ -210,12 +213,13 @@ public class Window implements ActionListener {
 
             if (command.equals("ENTER")) {
 
-
+                ta3.setText("");
                 try {
                     pull();
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
+
 
                 //  AddImage();
 
@@ -236,14 +240,30 @@ public class Window implements ActionListener {
 
 
                      pos = "skater";
+                B5.setText("POINTS");
+                B6.setText("ASSISTS");
+                B7.setVisible(true);
+                B7.setText("GOALS");
+                B5.setActionCommand("POINTS");
+                B6.setActionCommand("ASSISTS");
+                B7.setActionCommand("GOALS");
+
+
 
 
             }
 
             else if (command.equals("GOALIE")){
 
+                pos = "goalie";
+              B5.setText("WINS");
+              B6.setText("SHUTOUTS");
+              B7.setVisible(false);
+              B5.setActionCommand("WINS");
+                B6.setActionCommand("SHUTOUTS");
 
-                     pos = "goalie";
+
+
 
 
 
@@ -268,6 +288,22 @@ public class Window implements ActionListener {
 
 
                 stat = "points";
+
+
+            }
+
+            else if (command.equals("WINS")){
+
+
+                stat = "wins";
+
+
+            }
+
+            else if (command.equals("SHUTOUTS")){
+
+
+                stat = "shutouts";
 
 
             }
@@ -322,13 +358,13 @@ public class Window implements ActionListener {
 
 
             String dateRange = ta.getText();
-//            String stat = ta.getText();
+//
 
 
 
             URL url = new URL( "https://api-web.nhle.com/v1/" + pos + "-stats-leaders/" + dateRange + "/2?categories=" + stat + "&limit=5");
-            URL url2 = new URL("https://api-web.nhle.com/v1/" + pos + "-stats-leaders/" + dateRange + "/2?categories=" + stat + "&limit=5"
-            );
+
+
             System.out.println(url);
 
 
@@ -379,12 +415,12 @@ public class Window implements ActionListener {
 
 
             JSONArray msg = (JSONArray) jsonObject.get(stat);
-            JSONArray msg2 = (JSONArray) jsonObject.get(stat);
+
 
 
 
             int n = msg.size(); //(msg).length();
-            int n2 = msg2.size();
+
 
 
 
@@ -409,24 +445,33 @@ public class Window implements ActionListener {
                 ta3.append("Name: " + abName + " " + ab2Name + "\n");
             }
 
-            for (int i = 0; i < n2; ++i) {
-                JSONObject test = (JSONObject) msg2.get(i);
-                System.out.println(test);
-                // System.out.println(person.getInt("key"));
-                JSONObject name2 = (JSONObject) test.get("firstName");
-                System.out.println(name2);
-                String abName2 = (String) name2.get("default");
-                System.out.println(abName2);
-                JSONObject name3 = (JSONObject) test.get("lastName");
-                System.out.println(name3);
-                String ab3Name = (String) name3.get("default");
-                System.out.println(ab3Name);
 
 
 
 
-                ta3.append("Name: " + abName2 + " " + ab3Name + "\n");
-            }
+
+
+
+
+
+//            for (int i = 0; i < n2; ++i) {
+//                JSONObject test = (JSONObject) msg2.get(i);
+//                System.out.println(test);
+//                // System.out.println(person.getInt("key"));
+//                JSONObject name2 = (JSONObject) test.get("firstName");
+//                System.out.println(name2);
+//                String abName2 = (String) name2.get("default");
+//                System.out.println(abName2);
+//                JSONObject name3 = (JSONObject) test.get("lastName");
+//                System.out.println(name3);
+//                String ab3Name = (String) name3.get("default");
+//                System.out.println(ab3Name);
+//
+//
+//
+//
+//                ta3.append("Name: " + abName2 + " " + ab3Name + "\n");
+//            }
 
 
 
