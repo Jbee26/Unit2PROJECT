@@ -21,24 +21,21 @@ import org.json.simple.parser.ParseException;
 
 
 public class Window implements ActionListener {
-    private JFrame mainFrame;
-    private JFrame mainFrame2;
+    private static JFrame mainFrame;
     private JPanel controlPanel;
     private JMenuBar mb;
     private JMenu file, edit, help, ai;
     private JMenuItem cut, copy, paste, selectAll;
     private JTextArea ta; //typing area
-    private JFrame jf;
     private JLabel ljf;
     private JTextArea ta3;
+    private JTextArea ta4;
     private JScrollPane sp;
     private JPanel CtrlP;
     private JPanel CtrlP2;
     private JPanel CtrlP3;
     private String pos = "skater";
     private String stat = "points";
-    private String dateRange;
-    private String url = "https://api-web.nhle.com/v1/skater-stats-leaders/" + dateRange + "/2?categories=" + stat + "&limit=5";
 
 
 
@@ -53,7 +50,16 @@ public class Window implements ActionListener {
     private JButton B7;
 
 
+
+
     private ImageIcon IC;
+
+
+    private JLabel statusLabel;
+    private static JLabel imageLabel;
+    private static JPanel imagePanel;
+    private JPanel searchPanel;
+
 
 
 
@@ -63,16 +69,21 @@ public class Window implements ActionListener {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Window E1 = new Window();
+        Window.addImage();
+
 
     }
+
+
 
     private void prepareGUI() {
         mainFrame = new JFrame("NHL STATS");
         CtrlP = new JPanel();
         CtrlP2 = new JPanel();
         CtrlP3 = new JPanel();
+        imagePanel = new JPanel();
 
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setLayout(new GridLayout(4, 2));
@@ -124,6 +135,8 @@ public class Window implements ActionListener {
 
 
 
+
+
         mainFrame.add(ta);
 
 
@@ -171,6 +184,9 @@ public class Window implements ActionListener {
         mainFrame.add(mb);
         mainFrame.setJMenuBar(mb);
 
+        ta4 = new JTextArea("url: ");
+        ta4.setBounds(50, 5, WIDTH - 100, HEIGHT - 50);
+
 
 
 
@@ -201,6 +217,26 @@ public class Window implements ActionListener {
 
 
 
+        mainFrame.setVisible(true);
+
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+        imagePanel = new JPanel();
+        searchPanel = new JPanel();
+        searchPanel.setLayout(new BorderLayout());
+        JButton okButton = new JButton("OK!!!!!!!!!");
+        okButton.setActionCommand("OK");
+        okButton.addActionListener(new SwingControlDemo.ButtonClickListener());
+        searchPanel.add(okButton, BorderLayout.EAST);
+
+        searchPanel.add(ta, BorderLayout.CENTER);//add typing area
+        //controlPanel.setLayout(); //set the layout of the pannel
+
+        mainFrame.add(searchPanel, BorderLayout.NORTH);
         mainFrame.setVisible(true);
 
 
@@ -260,7 +296,9 @@ public class Window implements ActionListener {
               B6.setText("SHUTOUTS");
               B7.setVisible(false);
               B5.setActionCommand("WINS");
-                B6.setActionCommand("SHUTOUTS");
+              B6.setActionCommand("SHUTOUTS");
+
+
 
 
 
@@ -499,23 +537,77 @@ public class Window implements ActionListener {
 
 
     }
-    //Ask Mx. Bradford how to add image!
-    public void AddImage(){
+
+
+    private static void addImage() throws IOException {
         try {
-            BufferedImage image = ImageIO.read(new File("download.jpeg"));
-            if(!(image == null)) {
-                ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(WIDTH / 2, HEIGHT / 2, Image.SCALE_SMOOTH));
-                ljf = new JLabel(imageIcon);
-                mainFrame.removeAll();
-                mainFrame.add(ljf);
+            String path = "";
+//            if (!ta.getText().contains("http")) {
+//                path = "https://pettownsendvet.com/wp-content/uploads/2023/01/iStock-1052880600-2048x1365.jpg";
+//            } else {
+//                path = ta.getText();
+//                if (path.contains("url")) {
+//                    path = path.substring(path.indexOf("http"));
+//                }
+//            }
+
+
+            URL url = new URL(path);
+            BufferedImage ErrorImage = ImageIO.read(new File("bruins.png"));
+            BufferedImage inputImageBuff = ImageIO.read(url.openStream());
+
+
+            ImageIcon inputImage;
+            if (inputImageBuff != null) {
+                inputImage = new ImageIcon(inputImageBuff.getScaledInstance(800, 700, Image.SCALE_SMOOTH));
+                // = new JLabel();
+                if (inputImage != null) {
+                    imageLabel = new JLabel(inputImage);
+                } else {
+                    imageLabel =new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+
+                }
+                imagePanel.removeAll();
+                imagePanel.repaint();
+
+                imagePanel.add(imageLabel);
+                mainFrame.add(imagePanel, BorderLayout.CENTER);
+
+            }
+            else{
+                imageLabel =new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+
             }
 
-        } catch (IOException p) {
-            p.printStackTrace();
+        } catch (IOException e) {
+            System.out.println(e);
+            System.out.println("sadness");
+            BufferedImage ErrorImage = ImageIO.read(new File("bruins.jpg"));
+            JLabel imageLabel = new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+
+            imagePanel.removeAll();
+            imagePanel.repaint();
+            imagePanel.add(imageLabel);
+            mainFrame.add(imagePanel);
+
         }
 
+//        JButton submitButton = new JButton("Submit");
+//        JButton cancelButton = new JButton("Cancel");
+//
+//        submitButton.setActionCommand("Submit");
+//        cancelButton.setActionCommand("Cancel");
+//
+//        submitButton.addActionListener(new ButtonClickListener());
+//        cancelButton.addActionListener(new ButtonClickListener());
+//
+//        controlPanel.add(okButton, BorderLayout.EAST);
+//        controlPanel.add(submitButton, BorderLayout.CENTER);
+//        controlPanel.add(cancelButton, BorderLayout.WEST);
 
+        mainFrame.setVisible(true);
     }
+    //Ask Mx. Bradford how to add image!
 
 
 
