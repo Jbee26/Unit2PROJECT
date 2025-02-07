@@ -24,12 +24,12 @@ public class Window implements ActionListener {
     private static JFrame mainFrame;
     private JPanel controlPanel;
     private JMenuBar mb;
-    private JMenu file, edit, help, ai;
+    private JMenu file, edit, help;
     private JMenuItem cut, copy, paste, selectAll;
     private JTextArea ta; //typing area
-    private JLabel ljf;
+
     private JTextArea ta3;
-    private JTextArea ta4;
+
     private JScrollPane sp;
     private JPanel CtrlP;
     private JPanel CtrlP2;
@@ -37,6 +37,8 @@ public class Window implements ActionListener {
     private String pos = "skater";
     private String stat = "points";
 
+    private static JLabel imageLabel;
+    private static JPanel imagePanel;
 
 
     private int WIDTH = 800;
@@ -49,16 +51,18 @@ public class Window implements ActionListener {
     private JButton B6;
     private JButton B7;
 
+    private JPanel info;
+    private JPanel info2;
 
 
 
-    private ImageIcon IC;
 
 
-    private JLabel statusLabel;
-    private static JLabel imageLabel;
-    private static JPanel imagePanel;
-    private JPanel searchPanel;
+
+
+
+
+
 
 
 
@@ -71,7 +75,7 @@ public class Window implements ActionListener {
 
     public static void main(String[] args) throws IOException {
         Window E1 = new Window();
-        Window.addImage();
+
 
 
     }
@@ -84,12 +88,19 @@ public class Window implements ActionListener {
         CtrlP2 = new JPanel();
         CtrlP3 = new JPanel();
         imagePanel = new JPanel();
+        info = new JPanel();
+        info2 = new JPanel();
+        info.setLayout(new GridLayout(4,1));
+        info2.setLayout(new GridLayout(2,1));
 
         mainFrame.setSize(WIDTH, HEIGHT);
-        mainFrame.setLayout(new GridLayout(4, 2));
+        mainFrame.setLayout(new GridLayout(1, 2));
         CtrlP.setLayout(new GridLayout(2, 1));
-        CtrlP2.setLayout(new GridLayout(2, 1));
-        CtrlP2.setLayout(new GridLayout(1, 3));
+        CtrlP2.setLayout(new GridLayout(1, 2));
+
+
+        mainFrame.add(info);
+        mainFrame.add(info2);
 
 
 
@@ -113,36 +124,40 @@ public class Window implements ActionListener {
         B1.setForeground(Color.green);
         B2.setForeground(Color.red);
         Font f = new Font("Chalkboard", Font.ITALIC, 13);
-        Font f2 = new Font("Chalkboard", Font.ITALIC, 12);
         ta.setFont(f);
         ta3.setEditable(false);
 
         B1.setFont(f);
         B2.setFont(f);
 
-        JFrame jf = new JFrame();
-        ImageIcon IC = new ImageIcon("Ditto-Anime.avif");
-        jf.add(new JLabel(IC));
-        ljf = new JLabel();
-        jf.pack();
-        jf.setVisible(true);
 
 
-        mainFrame.add(CtrlP);
-        mainFrame.add(CtrlP2);
-        mainFrame.add(CtrlP3);
 
+        info.add(CtrlP);
+        info.add(CtrlP3);
+        info.add(ta);
+        info.add(ta3);
+
+        info2.add(CtrlP2);
 
 
 
 
 
-        mainFrame.add(ta);
 
 
-        mainFrame.add(sp);
 
-        mainFrame.add(ljf);
+
+
+
+
+
+
+
+
+
+
+
 
 
         CtrlP.add(B1);
@@ -168,7 +183,6 @@ public class Window implements ActionListener {
         file = new JMenu("File");
         edit = new JMenu("Edit");
         help = new JMenu("Help");
-        ai = new JMenu("AI");
         edit.add(cut);
         edit.add(copy);
         edit.add(paste);
@@ -176,7 +190,7 @@ public class Window implements ActionListener {
         mb.add(file);
         mb.add(edit);
         mb.add(help);
-        mb.add(ai);
+
 
         //end menu at top
 
@@ -184,8 +198,7 @@ public class Window implements ActionListener {
         mainFrame.add(mb);
         mainFrame.setJMenuBar(mb);
 
-        ta4 = new JTextArea("url: ");
-        ta4.setBounds(50, 5, WIDTH - 100, HEIGHT - 50);
+
 
 
 
@@ -226,17 +239,15 @@ public class Window implements ActionListener {
             }
         });
         imagePanel = new JPanel();
-        searchPanel = new JPanel();
-        searchPanel.setLayout(new BorderLayout());
-        JButton okButton = new JButton("OK!!!!!!!!!");
-        okButton.setActionCommand("OK");
-        okButton.addActionListener(new SwingControlDemo.ButtonClickListener());
-        searchPanel.add(okButton, BorderLayout.EAST);
+       // searchPanel = new JPanel();
+      //  searchPanel.setLayout(new BorderLayout());
 
-        searchPanel.add(ta, BorderLayout.CENTER);//add typing area
+
+
+     //   searchPanel.add(ta, BorderLayout.CENTER);//add typing area
         //controlPanel.setLayout(); //set the layout of the pannel
 
-        mainFrame.add(searchPanel, BorderLayout.NORTH);
+       // mainFrame.add(searchPanel, BorderLayout.NORTH);
         mainFrame.setVisible(true);
 
 
@@ -252,12 +263,21 @@ public class Window implements ActionListener {
                 ta3.setText("");
                 try {
                     pull();
+                    try {
+                        imagePanel.setVisible(true);
+                        addImage();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 } catch (Exception ex) {
                     System.out.println(ex);
+                    ta.setText("");
+                    ta.append("Invalid Range! Try Again (Ex: 20202021)");
                 }
 
 
-                //  AddImage();
+
+
 
 
 
@@ -268,6 +288,8 @@ public class Window implements ActionListener {
                 ta.setText("TYPE WHAT YEAR YOU WANT TO VIEW (EX: 20202021)");
 //                ta2.setText("");
                 ta3.setText("");
+                imagePanel.setVisible(false);
+
 
 
             }
@@ -275,7 +297,7 @@ public class Window implements ActionListener {
             else if (command.equals("SKATER")){
 
 
-                     pos = "skater";
+                pos = "skater";
                 B5.setText("POINTS");
                 B6.setText("ASSISTS");
                 B7.setVisible(true);
@@ -362,30 +384,6 @@ public class Window implements ActionListener {
     }
 
 
-//    public class ReadJson {
-//        public void main(String args[]) throws ParseException {
-//            // In java JSONObject is used to create JSON object
-//            // which is a subclass of java.util.HashMap.
-//
-//            JSONObject file = new JSONObject();
-//            file.put("Full Name", "Ritu Sharma");
-//            file.put("Roll No.", 1704310046);
-//            file.put("Tution Fees", 65400);
-//
-//
-//            // To print in JSON format.
-//            System.out.print(file.get("Tution Fees"));
-//            ReadJson readingIsWhat = new ReadJson();
-//
-//        }
-//
-//        public ReadJson() {
-//            try {
-//                pull();
-//            } catch (Exception e) {
-//                System.out.println(e);
-//            }
-//        }
 
     public void pull() throws ParseException {
         String output = "abc";
@@ -445,11 +443,7 @@ public class Window implements ActionListener {
         try {
 
 
-            //String name = (String)jsonObject.get("name");
-            //  String mass = (String)jsonObject.get("mass");
-            //  String eColor = (String)jsonObject.get("eye_color");
-            //String bYear = (String)jsonObject.get("birth_year");
-            //JSONArray starships = (JSONArray)jsonObject.get("starships");
+
 
 
             JSONArray msg = (JSONArray) jsonObject.get(stat);
@@ -457,8 +451,7 @@ public class Window implements ActionListener {
 
 
 
-            int n = msg.size(); //(msg).length();
-
+            int n = msg.size();
 
 
 
@@ -467,7 +460,6 @@ public class Window implements ActionListener {
             for (int i = 0; i < n; ++i) {
                 JSONObject test = (JSONObject) msg.get(i);
                 System.out.println(test);
-                // System.out.println(person.getInt("key"));
                 JSONObject name1 = (JSONObject) test.get("firstName");
                 System.out.println(name1);
                 String abName = (String) name1.get("default");
@@ -492,42 +484,7 @@ public class Window implements ActionListener {
 
 
 
-//            for (int i = 0; i < n2; ++i) {
-//                JSONObject test = (JSONObject) msg2.get(i);
-//                System.out.println(test);
-//                // System.out.println(person.getInt("key"));
-//                JSONObject name2 = (JSONObject) test.get("firstName");
-//                System.out.println(name2);
-//                String abName2 = (String) name2.get("default");
-//                System.out.println(abName2);
-//                JSONObject name3 = (JSONObject) test.get("lastName");
-//                System.out.println(name3);
-//                String ab3Name = (String) name3.get("default");
-//                System.out.println(ab3Name);
 //
-//
-//
-//
-//                ta3.append("Name: " + abName2 + " " + ab3Name + "\n");
-//            }
-
-
-
-
-
-
-
-
-            // System.out.println(mass);
-            //  System.out.println(eColor);
-            // System.out.println(bYear);
-            //  for (int i = 0; i < starships.size(); i++) {
-            // System.out.println(starships.get(i));
-
-            // }
-//            for (int i = 0; i < ability.size(); i++) {
-//                 System.out.println(ability.get(i));
-//                 }
 
 
         } catch (Exception e) {
@@ -539,79 +496,41 @@ public class Window implements ActionListener {
     }
 
 
-    private static void addImage() throws IOException {
-        try {
-            String path = "";
-//            if (!ta.getText().contains("http")) {
-//                path = "https://pettownsendvet.com/wp-content/uploads/2023/01/iStock-1052880600-2048x1365.jpg";
-//            } else {
-//                path = ta.getText();
-//                if (path.contains("url")) {
-//                    path = path.substring(path.indexOf("http"));
-//                }
-//            }
+    private void addImage() throws IOException {
 
 
-            URL url = new URL(path);
-            BufferedImage ErrorImage = ImageIO.read(new File("bruins.png"));
-            BufferedImage inputImageBuff = ImageIO.read(url.openStream());
-
-
+            BufferedImage Blades = ImageIO.read(new File("bruins.jpg"));
             ImageIcon inputImage;
-            if (inputImageBuff != null) {
-                inputImage = new ImageIcon(inputImageBuff.getScaledInstance(800, 700, Image.SCALE_SMOOTH));
+
+            if (Blades != null) {
+                inputImage = new ImageIcon(Blades.getScaledInstance(800, 700, Image.SCALE_SMOOTH));
                 // = new JLabel();
                 if (inputImage != null) {
                     imageLabel = new JLabel(inputImage);
                 } else {
-                    imageLabel =new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+                    imageLabel = new JLabel(new ImageIcon(Blades.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
 
                 }
                 imagePanel.removeAll();
                 imagePanel.repaint();
 
                 imagePanel.add(imageLabel);
-                mainFrame.add(imagePanel, BorderLayout.CENTER);
-
-            }
-            else{
-                imageLabel =new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
-
+                info2.add(imagePanel, BorderLayout.SOUTH);
+            } else {
+                imageLabel = new JLabel(new ImageIcon(Blades.getScaledInstance(800, 620, Image.SCALE_SMOOTH)));
             }
 
-        } catch (IOException e) {
-            System.out.println(e);
-            System.out.println("sadness");
-            BufferedImage ErrorImage = ImageIO.read(new File("bruins.jpg"));
-            JLabel imageLabel = new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
 
-            imagePanel.removeAll();
-            imagePanel.repaint();
-            imagePanel.add(imageLabel);
-            mainFrame.add(imagePanel);
+//
 
+            mainFrame.setVisible(true);
         }
-
-//        JButton submitButton = new JButton("Submit");
-//        JButton cancelButton = new JButton("Cancel");
-//
-//        submitButton.setActionCommand("Submit");
-//        cancelButton.setActionCommand("Cancel");
-//
-//        submitButton.addActionListener(new ButtonClickListener());
-//        cancelButton.addActionListener(new ButtonClickListener());
-//
-//        controlPanel.add(okButton, BorderLayout.EAST);
-//        controlPanel.add(submitButton, BorderLayout.CENTER);
-//        controlPanel.add(cancelButton, BorderLayout.WEST);
-
-        mainFrame.setVisible(true);
     }
-    //Ask Mx. Bradford how to add image!
 
 
 
-}
+
+
 
 
 
